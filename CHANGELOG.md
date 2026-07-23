@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.3.1
+
+- Made the shared caption optional.
+- When the caption field is empty, caption editing is skipped and every existing TikTok caption is preserved.
+- Updated the popup, validation logic, summary text, documentation, and release version.
+
 ## 2.3.0
 
 - Translated the extension interface, status messages, errors, documentation, issue templates, and workflow output to English.
