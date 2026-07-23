@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "TikTok Studio Scheduler",
+  "version": "2.2.2",
+  "description": "Applica una didascalia e programma più clip TikTok Studio da adesso o da una data/ora specifica, normalizzando per eccesso date e intervalli a multipli di 5 minuti.",
+  "minimum_chrome_version": "114",
+  "permissions": [
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://www.tiktok.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.tiktok.com/tiktokstudio/upload*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "TikTok Studio Scheduler",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
