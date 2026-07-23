@@ -1,8 +1,8 @@
 'use strict';
 
-const POPUP_VERSION = '2.3.0';
+const POPUP_VERSION = '2.3.1';
 
-const PAGE_PATTERN = /^https:\/\/(?:www\.)?tiktok\.com\/tiktokstudio\/upload(?:[/?#]|$)/i;
+const PAGE_PATTERN = /^https:\/\/(?:www\.)?tiktok\.com\/tiktokstudio\/upload(?:[\/?#]|$)/i;
 const MIN_START_LEAD_MINUTES = 20;
 const MAX_SCHEDULE_DAYS = 30;
 const DEFAULTS = {
@@ -186,7 +186,6 @@ function readConfig() {
   const intervalMinutes = normalizeIntervalValue({ initializeEmpty: true });
   const startMode = selectedStartMode();
 
-  if (!caption) throw new Error('Enter a caption.');
   if (!Number.isInteger(intervalMinutes) || intervalMinutes < 5 || intervalMinutes > 1440 || intervalMinutes % 5 !== 0) {
     throw new Error('The interval must be a multiple of 5 between 5 and 1440 minutes.');
   }
@@ -266,7 +265,7 @@ function renderState(state = {}) {
     time.textContent = item.success ? item.displayTime : `Error: ${item.error || 'unknown'}`;
     const caption = document.createElement('div');
     caption.className = 'summary-caption';
-    caption.textContent = item.caption || '';
+    caption.textContent = item.caption || 'Caption unchanged';
     body.append(time, caption);
     row.append(index, body);
     el.summaryList.append(row);
