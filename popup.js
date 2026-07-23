@@ -1,5 +1,7 @@
 'use strict';
 
+const POPUP_VERSION = '2.3.0';
+
 const PAGE_PATTERN = /^https:\/\/(?:www\.)?tiktok\.com\/tiktokstudio\/upload(?:[/?#]|$)/i;
 const MIN_START_LEAD_MINUTES = 20;
 const MAX_SCHEDULE_DAYS = 30;
@@ -72,7 +74,7 @@ function toLocalInputValue(date) {
 }
 
 function formatLocalDate(date) {
-  return date.toLocaleString('it-IT', {
+  return date.toLocaleString('en-US', {
     year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
   });
 }
@@ -120,6 +122,8 @@ function updateStartModeUi() {
 function normalizeCustomStartValue({ initializeEmpty = false } = {}) {
   const minimum = minimumStartDate();
   const maximum = maximumStartDate();
+  const minimumValue = toLocalInputValue(minimum);
+  const maximumValue = toLocalInputValue(maximum);
   const current = parseLocalDateTime(el.customStart.value);
 
   let normalized = current ? ceilToFive(current) : null;
@@ -145,7 +149,7 @@ function refreshCustomMinimum({ initializeEmpty = false } = {}) {
   el.customStart.min = toLocalInputValue(minimum);
   el.customStart.max = toLocalInputValue(maximum);
   el.customStart.step = '300';
-  el.customMinHint.textContent = `Selezionabile da ${formatLocalDate(minimum)} fino a ${formatLocalDate(maximum)}. I minuti digitati vengono arrotondati automaticamente per eccesso al multiplo di 5.`;
+  el.customMinHint.textContent = `Available from ${formatLocalDate(minimum)} through ${formatLocalDate(maximum)}. Typed minutes are automatically rounded up to the next 5-minute increment.`;
 
   return normalizeCustomStartValue({ initializeEmpty });
 }
@@ -182,20 +186,20 @@ function readConfig() {
   const intervalMinutes = normalizeIntervalValue({ initializeEmpty: true });
   const startMode = selectedStartMode();
 
-  if (!caption) throw new Error('Inserisci una didascalia.');
+  if (!caption) throw new Error('Enter a caption.');
   if (!Number.isInteger(intervalMinutes) || intervalMinutes < 5 || intervalMinutes > 1440 || intervalMinutes % 5 !== 0) {
-    throw new Error('L’intervallo deve essere un multiplo di 5 compreso tra 5 e 1440 minuti.');
+    throw new Error('The interval must be a multiple of 5 between 5 and 1440 minutes.');
   }
 
   if (startMode === 'custom') {
     const { minimum, maximum, normalized } = refreshCustomMinimum();
     const selected = normalized || parseLocalDateTime(el.customStart.value);
-    if (!selected) throw new Error('Seleziona una data e un’ora valide per la prima clip.');
+    if (!selected) throw new Error('Select a valid date and time for the first clip.');
     if (selected < minimum) {
-      throw new Error(`La prima clip deve essere programmata almeno alle ${formatLocalDate(minimum)}.`);
+      throw new Error(`The first clip must be scheduled no earlier than ${formatLocalDate(minimum)}.`);
     }
     if (selected > maximum) {
-      throw new Error(`TikTok consente di programmare entro 30 giorni: scegli al massimo ${formatLocalDate(maximum)}.`);
+      throw new Error(`TikTok allows scheduling up to 30 days ahead. Choose a time no later than ${formatLocalDate(maximum)}.`);
     }
     return { caption, intervalMinutes, startMode, startAtMs: selected.getTime() };
   }
@@ -209,20 +213,20 @@ async function getActiveTab() {
 }
 
 async function send(message) {
-  if (!activeTab?.id) throw new Error('Scheda attiva non disponibile.');
+  if (!activeTab?.id) throw new Error('The active tab is not available.');
   try {
     return await chrome.tabs.sendMessage(activeTab.id, message);
   } catch {
-    throw new Error('Content script non disponibile. Ricarica completamente la pagina TikTok Studio dopo avere installato questa versione.');
+    throw new Error('The content script is not available. Fully reload the TikTok Studio page after installing this version.');
   }
 }
 
 function statusLabel(status) {
   return ({
-    idle: 'Pronto', scanning: 'Analisi pagina', running: 'Automazione in corso',
-    ready: 'Pronto per pubblicare', publishing: 'Pubblicazione avviata',
-    published: 'Comando inviato', stopped: 'Interrotta', error: 'Errore'
-  })[status] || 'Stato';
+    idle: 'Ready', scanning: 'Scanning page', running: 'Automation running',
+    ready: 'Ready to publish', publishing: 'Publishing started',
+    published: 'Command sent', stopped: 'Stopped', error: 'Error'
+  })[status] || 'Status';
 }
 
 function renderState(state = {}) {
@@ -233,7 +237,7 @@ function renderState(state = {}) {
 
   el.statusDot.className = `dot ${status}`;
   el.statusTitle.textContent = statusLabel(status);
-  el.statusMessage.textContent = state.message || 'Compila i campi e avvia l’automazione.';
+  el.statusMessage.textContent = state.message || 'Complete the fields and start the automation.';
   el.progressText.textContent = `${processed}/${total}`;
   el.progressBar.max = Math.max(total, 1);
   el.progressBar.value = Math.min(processed, Math.max(total, 1));
@@ -259,7 +263,7 @@ function renderState(state = {}) {
     const body = document.createElement('div');
     const time = document.createElement('div');
     time.className = item.success ? 'summary-time' : 'summary-time error-text';
-    time.textContent = item.success ? item.displayTime : `Errore: ${item.error || 'sconosciuto'}`;
+    time.textContent = item.success ? item.displayTime : `Error: ${item.error || 'unknown'}`;
     const caption = document.createElement('div');
     caption.className = 'summary-caption';
     caption.textContent = item.caption || '';
@@ -275,7 +279,7 @@ async function refreshState() {
     const response = await send({ type: 'TTS_GET_STATE' });
     if (response?.state) renderState(response.state);
   } catch {
-    // Mostrato solo quando l'utente prova ad avviare.
+    // Shown only when the user tries to start the automation.
   }
 }
 
@@ -283,9 +287,9 @@ async function startAutomation() {
   try {
     const config = readConfig();
     persistForm();
-    renderState({ status: 'scanning', message: 'Ricerca delle clip…', total: 0, processed: 0, results: [] });
+    renderState({ status: 'scanning', message: 'Looking for clips…', total: 0, processed: 0, results: [] });
     const response = await send({ type: 'TTS_START', config });
-    if (!response?.ok) throw new Error(response?.error || 'Impossibile avviare l’automazione.');
+    if (!response?.ok) throw new Error(response?.error || 'Unable to start the automation.');
   } catch (error) {
     renderState({ status: 'error', message: error.message, error: error.message, total: 0, processed: 0, results: [] });
   }
@@ -339,11 +343,11 @@ el.stop.addEventListener('click', async () => {
 });
 
 el.publish.addEventListener('click', async () => {
-  if (!window.confirm('Confermi il clic sul pulsante “Pubblica (N)” di TikTok?')) return;
+  if (!window.confirm('Confirm clicking TikTok’s “Publish (N)” button?')) return;
   try {
     el.publish.disabled = true;
     const response = await send({ type: 'TTS_PUBLISH' });
-    if (!response?.ok) throw new Error(response?.error || 'Pubblicazione non avviata.');
+    if (!response?.ok) throw new Error(response?.error || 'Publishing was not started.');
     if (response.state) renderState(response.state);
   } catch (error) {
     renderState({ status: 'error', message: error.message, error: error.message });
@@ -365,7 +369,7 @@ async function initialize() {
   el.warning.hidden = correctPage;
   el.start.disabled = !correctPage;
   if (!correctPage) {
-    renderState({ status: 'idle', message: 'L’estensione funziona solo nella pagina TikTok Studio Upload.' });
+    renderState({ status: 'idle', message: 'This extension only works on the TikTok Studio Upload page.' });
     return;
   }
   await refreshState();

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,91 +12,91 @@
       <div class="brand-mark" aria-hidden="true">T</div>
       <div>
         <h1>TikTok Scheduler</h1>
-        <p>Prepara prima, pubblica dopo.</p>
+        <p>Prepare first, publish later.</p>
       </div>
-      <span class="version">v2.2.2</span>
+      <span class="version">v2.3.0</span>
     </header>
 
     <section id="pageWarning" class="notice warning" hidden>
-      Apri la pagina <strong>TikTok Studio Upload</strong> e ricaricala dopo avere installato l’estensione.
+      Open the <strong>TikTok Studio Upload</strong> page and reload it after installing the extension.
     </section>
 
     <form id="schedulerForm" novalidate>
-      <label for="caption">Didascalia per tutte le clip</label>
-      <textarea id="caption" rows="3" placeholder="Es. @nomeaccount" required></textarea>
+      <label for="caption">Caption for all clips</label>
+      <textarea id="caption" rows="3" placeholder="Example: @accountname" required></textarea>
 
-      <label for="intervalMinutes">Intervallo tra le clip</label>
+      <label for="intervalMinutes">Interval between clips</label>
       <div class="number-field">
         <input id="intervalMinutes" type="number" min="5" max="1440" step="5" value="10" required>
         <span>min</span>
       </div>
-      <p class="field-hint">I valori digitati vengono arrotondati automaticamente per eccesso: 7 → 10, 13 → 15, 15 → 15.</p>
+      <p class="field-hint">Typed values are automatically rounded up: 7 → 10, 13 → 15, 15 → 15.</p>
 
       <fieldset class="start-fieldset">
-        <legend>Partenza della prima clip</legend>
+        <legend>First clip start time</legend>
 
         <label class="radio-option" for="startNow">
           <input id="startNow" name="startMode" type="radio" value="now" checked>
           <span>
-            <strong>Da adesso</strong>
-            <small>Primo multiplo di 5 disponibile almeno 20 minuti nel futuro.</small>
+            <strong>From now</strong>
+            <small>First available 5-minute increment at least 20 minutes in the future.</small>
           </span>
         </label>
 
         <label class="radio-option" for="startCustom">
           <input id="startCustom" name="startMode" type="radio" value="custom">
           <span>
-            <strong>Da data e ora specifica</strong>
-            <small>Scegli il momento esatto della prima clip.</small>
+            <strong>From a specific date and time</strong>
+            <small>Choose the exact start time for the first clip.</small>
           </span>
         </label>
 
         <div id="customStartGroup" class="custom-start" hidden>
-          <label for="customStart">Data e ora della prima clip</label>
+          <label for="customStart">First clip date and time</label>
           <input id="customStart" type="datetime-local" step="300">
           <p id="customMinHint" class="field-hint"></p>
-          <p class="field-hint">TikTok consente di programmare entro 30 giorni. I minuti digitati vengono arrotondati automaticamente per eccesso al multiplo di 5 successivo.</p>
+          <p class="field-hint">TikTok allows scheduling up to 30 days ahead. Typed minutes are automatically rounded up to the next 5-minute increment.</p>
         </div>
       </fieldset>
 
       <p class="hint">
-        Ogni riga viene confermata con il pulsante <strong>In programma</strong>. Il pulsante globale Pubblica rimane separato.
+        Each row is confirmed with TikTok’s <strong>Schedule</strong> button. The global Publish button remains separate.
       </p>
 
       <div class="actions">
-        <button id="startButton" class="primary" type="button">Avvia automazione</button>
-        <button id="stopButton" class="secondary" type="button" disabled>Interrompi</button>
+        <button id="startButton" class="primary" type="button">Start automation</button>
+        <button id="stopButton" class="secondary" type="button" disabled>Stop</button>
       </div>
     </form>
 
     <section class="status-card" aria-live="polite">
       <div class="status-line">
         <span id="statusDot" class="dot idle"></span>
-        <strong id="statusTitle">Pronto</strong>
+        <strong id="statusTitle">Ready</strong>
         <span id="progressText">0/0</span>
       </div>
-      <p id="statusMessage">Compila i campi e avvia l’automazione.</p>
+      <p id="statusMessage">Complete the fields and start the automation.</p>
       <progress id="progressBar" value="0" max="1"></progress>
       <p id="scriptVersion" class="script-version"></p>
     </section>
 
     <section id="summarySection" hidden>
       <div class="section-heading">
-        <h2>Riepilogo</h2>
+        <h2>Summary</h2>
         <span id="summaryCount"></span>
       </div>
       <div id="summaryList" class="summary-list"></div>
     </section>
 
     <section id="errorSection" class="notice error" hidden>
-      <strong>Automazione interrotta</strong>
+      <strong>Automation stopped</strong>
       <p id="errorMessage"></p>
     </section>
 
     <button id="publishButton" class="publish" type="button" disabled>
-      Pubblica sulla pagina
+      Publish on TikTok
     </button>
-    <p class="publish-note">Il pulsante globale “Pubblica (N)” non viene mai premuto durante la preparazione.</p>
+    <p class="publish-note">The global “Publish (N)” button is never clicked during preparation.</p>
   </main>
 
   <script src="popup.js"></script>
