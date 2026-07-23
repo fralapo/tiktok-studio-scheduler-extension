@@ -1,8 +1,9 @@
-# Contribuire
+# Contributing
 
-1. Apri una issue descrivendo il problema e la versione di TikTok Studio.
-2. Crea un branch dedicato.
-3. Mantieni l'estensione compatibile con Manifest V3.
-4. Non aggiungere pubblicazione automatica senza conferma esplicita dell'utente.
-5. Evita selettori basati su classi styled-jsx con hash dinamici.
-6. Verifica manualmente il flusso con poche clip e senza premere il pulsante globale `Pubblica (N)` durante i test.
+1. Open an issue describing the problem, the extension version, and the TikTok Studio interface language.
+2. Create a dedicated branch.
+3. Keep the extension compatible with Chrome Manifest V3.
+4. Do not add automatic publishing without explicit user confirmation.
+5. Avoid selectors based on dynamically hashed styled-jsx classes.
+6. Manually test with a small number of clips and never click the global `Publish (N)` button during preparation tests.
+7. Keep all user-facing text and project documentation in English.

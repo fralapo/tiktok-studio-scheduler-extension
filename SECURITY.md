@@ -1,13 +1,13 @@
-# Sicurezza
+# Security
 
-## Segnalazione vulnerabilità
+## Reporting a vulnerability
 
-Non pubblicare credenziali, cookie, token o dati dell'account nelle issue.
-Per problemi di sicurezza, apri una segnalazione privata tramite GitHub Security Advisories, se disponibile.
+Do not post credentials, cookies, tokens, or account data in public issues. For security-sensitive reports, use GitHub Security Advisories when available.
 
-## Modello di sicurezza
+## Security model
 
-- Nessun server esterno.
-- Nessuna raccolta di credenziali.
-- Accesso host limitato a TikTok.
-- Il pulsante globale `Pubblica (N)` richiede sempre un comando separato dell'utente.
+- No external server.
+- No credential collection.
+- Host access limited to TikTok.
+- Preparation never clicks the global `Publish (N)` button automatically.
+- The global publish action always requires a separate user command and browser confirmation.

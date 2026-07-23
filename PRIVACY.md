@@ -1,3 +1,3 @@
 # Privacy
 
-L’estensione non invia dati a server esterni. Didascalia e intervallo vengono conservati esclusivamente nel `localStorage` del popup dell’estensione. L’accesso host è limitato a `https://www.tiktok.com/*`.
+The extension does not send data to external servers. The caption, interval, start mode, and custom start time are stored only in the extension popup’s `localStorage`. Host access is limited to `https://www.tiktok.com/*`.

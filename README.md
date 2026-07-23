@@ -1,95 +1,91 @@
 # TikTok Studio Scheduler
 
 [![Manifest V3](https://img.shields.io/badge/Chrome-Manifest%20V3-4285F4)](manifest.json)
-[![Version](https://img.shields.io/badge/version-2.2.2-ff2c55)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.3.0-ff2c55)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Estensione Chrome open source per applicare una didascalia comune e programmare più clip nella pagina TikTok Studio Upload.
+An open-source Chrome extension that applies one caption and schedules multiple clips on the TikTok Studio Upload page.
 
 > [!IMPORTANT]
-> Il progetto automatizza l'interfaccia web di TikTok Studio e può richiedere aggiornamenti quando TikTok modifica il DOM. Verifica sempre il riepilogo prima di usare il comando separato **Pubblica sulla pagina**.
+> This project automates TikTok Studio’s web interface and may require updates whenever TikTok changes its DOM. Always review the schedule summary before using the separate **Publish on TikTok** command.
 
-## Funzioni principali
+## Features
 
-- programmazione da adesso o da data/ora specifica;
-- intervalli normalizzati per eccesso a multipli di 5 minuti;
-- supporto del calendario TikTok fino al limite disponibile di 30 giorni;
-- modifica didascalie tramite Draft.js;
-- conferma separata per `Pubblica (N)`;
-- nessun server esterno e nessuna raccolta di credenziali.
+- schedule from now or from a specific date and time;
+- automatically round typed times and intervals up to 5-minute increments;
+- support TikTok’s available scheduling window of up to 30 days;
+- edit Draft.js captions;
+- keep the global `Publish (N)` action separate;
+- use no external server and collect no credentials.
 
-## Normalizzazione automatica dell’intervallo — 2.2.2
+## Start modes
 
-Anche il campo **Intervallo tra le clip** viene corretto automaticamente per eccesso al multiplo di 5 successivo, sia dopo la digitazione sia prima dell’avvio:
+- **From now**: schedules the first clip at the first 5-minute increment at least 20 minutes in the future.
+- **From a specific date and time**: uses an exact first-clip start time that is:
+  - at least 20 minutes in the future;
+  - aligned to a 5-minute increment;
+  - within TikTok’s 30-day scheduling window.
 
-- `7` → `10` minuti
-- `13` → `15` minuti
-- `15` → `15` minuti
-- `18` → `20` minuti
+Each following clip is scheduled from the previously accepted time plus the chosen interval.
 
-Il valore resta compreso tra 5 e 1440 minuti. La normalizzazione della data/ora specifica continua a funzionare nello stesso modo.
+## Automatic rounding
 
-## Sicurezza
+Typed values are rounded **up** to the next 5-minute increment.
 
-La preparazione non preme mai automaticamente il pulsante globale `Pubblica (N)`. Dopo il riepilogo serve il comando separato **Pubblica sulla pagina** e una conferma dell’utente.
+Time examples:
 
-## Modalità di partenza
+- `13:13` → `13:15`
+- `13:55` → `13:55`
+- `13:58` → `14:00`
+- `23:58` → `00:00` on the next day
 
-- **Da adesso**: la prima clip viene impostata al primo multiplo di 5 almeno 20 minuti nel futuro.
-- **Da data e ora specifica**: permette di scegliere il momento della prima clip, sempre:
-  - almeno 20 minuti nel futuro;
-  - con minuti multipli di 5;
-  - entro il limite TikTok di 30 giorni.
+Interval examples:
 
-Le clip successive seguono l’intervallo configurato, anch’esso multiplo di 5.
+- `7` → `10` minutes
+- `13` → `15` minutes
+- `15` → `15` minutes
+- `18` → `20` minutes
 
-## Arrotondamento automatico dell’orario
+## Calendar handling
 
-Quando la data e l’ora vengono digitate manualmente, i minuti sono normalizzati automaticamente **per eccesso** al multiplo di 5 successivo:
+The extension uses TikTok’s verified calendar structure:
 
-- `13:13` diventa `13:15`;
-- `13:55` resta `13:55`;
-- `13:58` diventa `14:00`;
-- `23:58` diventa `00:00` del giorno successivo.
+- reads the displayed month and year from `.month-header-wrapper .title-wrapper`;
+- navigates months through the two `.month-header-wrapper .arrow` elements;
+- waits for the month title to change after every navigation click;
+- identifies the displayed month by finding the consecutive `1..N` day sequence;
+- clicks the actual interactive `span.day` element;
+- verifies `.day.selected` before setting the time;
+- rejects days without the `valid` class.
 
-La normalizzazione avviene durante la modifica del campo, quando il campo perde il focus e nuovamente prima dell’avvio dell’automazione.
+This avoids clicking a non-interactive wrapper or selecting a duplicate day number from an adjacent month.
 
-## Correzione calendario 2.2.0
+## Installation
 
-La selezione della data usa la struttura reale verificata del calendario TikTok:
+1. Remove older versions from `chrome://extensions`.
+2. Close all open TikTok Studio tabs.
+3. Download or clone this repository.
+4. Open `chrome://extensions` and enable **Developer mode**.
+5. Click **Load unpacked** and select the repository folder.
+6. Open a fresh `https://www.tiktok.com/tiktokstudio/upload` page.
 
-- legge mese e anno da `.month-header-wrapper .title-wrapper`;
-- cambia mese cliccando i due `span.arrow` in ordine DOM;
-- attende il cambiamento effettivo del titolo dopo ogni click;
-- distingue i giorni del mese corrente cercando la sequenza consecutiva `1..N` nella griglia;
-- clicca esattamente `span.day`, il nodo che possiede il gestore React;
-- verifica la classe `.day.selected` prima di impostare ora e minuti;
-- rifiuta giorni senza classe `valid`.
+The popup should show `v2.3.0` and `Content script 2.3.0`.
 
-Questo evita sia il click sul contenitore non interattivo sia la selezione del giorno duplicato appartenente al mese precedente o successivo.
+## Usage
 
-## Installazione
+1. Upload the clips in TikTok Studio.
+2. Open the extension popup.
+3. Enter the shared caption.
+4. Choose the interval between clips.
+5. Select **From now** or **From a specific date and time**.
+6. Click **Start automation**.
+7. Review the summary and the TikTok Studio table.
+8. Use **Publish on TikTok** only after confirming every row is correct.
 
-1. Rimuovi tutte le versioni precedenti da `chrome://extensions`.
-2. Chiudi tutte le schede TikTok Studio.
-3. Estrai lo ZIP in una cartella nuova.
-4. Attiva **Modalità sviluppatore**.
-5. Premi **Carica estensione non pacchettizzata** e scegli la cartella estratta.
-6. Apri una nuova pagina `https://www.tiktok.com/tiktokstudio/upload`.
+## Safety behavior
 
-Nel popup devono apparire `v2.2.2` e `Content script 2.2.2`.
+Preparation never clicks the global `Publish (N)` button automatically. Publishing requires a separate command and an explicit browser confirmation.
 
-## Uso
+## Compatibility note
 
-1. Carica le clip su TikTok Studio.
-2. Apri il popup.
-3. Inserisci la didascalia.
-4. Scegli l’intervallo.
-5. Scegli **Da adesso** oppure **Da data e ora specifica**.
-6. Premi **Avvia automazione**.
-7. Controlla il riepilogo e la tabella.
-8. Premi separatamente **Pubblica sulla pagina** solo quando sei soddisfatto.
-
-## Note
-
-TikTok può modificare il DOM senza preavviso. La versione 2.2.2 si basa sui selettori e comportamenti verificati nel luglio 2026, evitando classi styled-jsx con hash dinamici.
+TikTok may change its DOM without notice. Version 2.3.0 uses selectors and behavior verified in July 2026 and avoids dynamically hashed styled-jsx classes.

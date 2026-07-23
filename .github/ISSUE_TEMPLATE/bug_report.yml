@@ -1,30 +1,37 @@
-name: Segnalazione bug
-description: Segnala un problema nell'automazione TikTok Studio
+name: Bug report
+description: Report a problem with the TikTok Studio automation
 title: "[Bug]: "
 labels: ["bug"]
 body:
   - type: input
     id: version
     attributes:
-      label: Versione estensione
-      placeholder: 2.2.2
+      label: Extension version
+      placeholder: 2.3.0
+    validations:
+      required: true
+  - type: input
+    id: tiktok_language
+    attributes:
+      label: TikTok interface language
+      placeholder: English, Italian, etc.
     validations:
       required: true
   - type: textarea
     id: behavior
     attributes:
-      label: Comportamento osservato
+      label: Observed behavior
     validations:
       required: true
   - type: textarea
     id: expected
     attributes:
-      label: Comportamento atteso
+      label: Expected behavior
     validations:
       required: true
   - type: textarea
     id: logs
     attributes:
-      label: Log console
-      description: Non includere credenziali, cookie o token.
+      label: Console logs
+      description: Do not include credentials, cookies, tokens, or private account information.
       render: shell

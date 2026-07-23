@@ -28,7 +28,7 @@ jobs:
       - name: Check version consistency
         run: |
           python - <<'PY'
-          import json, pathlib, sys
+          import json, re, pathlib, sys
           manifest = json.loads(pathlib.Path('manifest.json').read_text())
           version = manifest['version']
           texts = {
@@ -38,7 +38,7 @@ jobs:
           }
           missing = [name for name, text in texts.items() if version not in text]
           if missing:
-              print(f"Versione {version} non trovata in: {', '.join(missing)}")
+              print(f"Version {version} not found in: {', '.join(missing)}")
               sys.exit(1)
-          print(f"Versione coerente: {version}")
+          print(f"Version is consistent: {version}")
           PY
