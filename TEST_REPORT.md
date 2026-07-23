@@ -1,10 +1,12 @@
-# Test report 2.3.0
+# Test report 2.3.1
 
 ## Checks performed
 
-- `manifest.json` is valid and reports version 2.3.0.
+- `manifest.json` is valid and reports version 2.3.1.
 - JavaScript syntax checks pass for `popup.js` and `content.js`.
 - Manifest, popup, and content-script versions match.
+- Empty captions are accepted by popup and content-script validation.
+- When the caption is empty, `updateCaption()` is not called and existing TikTok captions remain unchanged.
 - Popup HTML uses `lang="en"`.
 - All user-facing popup labels, status labels, confirmations, errors, and documentation are in English.
 - Date display uses `en-US`.
@@ -15,4 +17,4 @@
 
 ## Scope
 
-This release changes localization and documentation. Scheduling, calendar selection, interval rounding, and publish-safety behavior remain unchanged.
+This release makes the caption optional. Scheduling, calendar selection, interval rounding, and publish-safety behavior remain unchanged.
