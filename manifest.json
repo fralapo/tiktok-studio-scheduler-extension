@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "TikTok Studio Scheduler",
-  "version": "2.2.2",
-  "description": "Applica una didascalia e programma più clip TikTok Studio da adesso o da una data/ora specifica, normalizzando per eccesso date e intervalli a multipli di 5 minuti.",
+  "version": "2.3.0",
+  "description": "Apply one caption and schedule multiple TikTok Studio clips from now or from a specific date and time, rounding dates and intervals up to 5-minute increments.",
   "minimum_chrome_version": "114",
   "permissions": [
     "activeTab"
