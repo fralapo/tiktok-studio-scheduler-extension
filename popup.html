@@ -14,7 +14,7 @@
         <h1>TikTok Scheduler</h1>
         <p>Prepare first, publish later.</p>
       </div>
-      <span class="version">v2.3.0</span>
+      <span class="version">v2.3.1</span>
     </header>
 
     <section id="pageWarning" class="notice warning" hidden>
@@ -22,8 +22,9 @@
     </section>
 
     <form id="schedulerForm" novalidate>
-      <label for="caption">Caption for all clips</label>
-      <textarea id="caption" rows="3" placeholder="Example: @accountname" required></textarea>
+      <label for="caption">Caption for all clips <span class="optional-label">(optional)</span></label>
+      <textarea id="caption" rows="3" placeholder="Leave empty to keep each existing caption unchanged"></textarea>
+      <p class="field-hint">When empty, the extension skips caption editing and preserves every clip’s current caption.</p>
 
       <label for="intervalMinutes">Interval between clips</label>
       <div class="number-field">
