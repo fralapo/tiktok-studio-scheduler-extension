@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "TikTok Studio Scheduler",
   "version": "2.3.1",
-  "description": "Optionally apply one caption and schedule multiple TikTok Studio clips from now or from a specific date and time, rounding dates and intervals up to 5-minute increments.",
+  "description": "Optionally apply a caption and schedule multiple TikTok Studio clips from now or a chosen date and time.",
   "minimum_chrome_version": "114",
   "permissions": [
     "activeTab"
