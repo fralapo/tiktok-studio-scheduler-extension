@@ -1,10 +1,10 @@
 # TikTok Studio Scheduler
 
 [![Manifest V3](https://img.shields.io/badge/Chrome-Manifest%20V3-4285F4)](manifest.json)
-[![Version](https://img.shields.io/badge/version-2.3.0-ff2c55)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.3.1-ff2c55)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-An open-source Chrome extension that applies one caption and schedules multiple clips on the TikTok Studio Upload page.
+An open-source Chrome extension that optionally applies one shared caption and schedules multiple clips on the TikTok Studio Upload page.
 
 > [!IMPORTANT]
 > This project automates TikTok Studio’s web interface and may require updates whenever TikTok changes its DOM. Always review the schedule summary before using the separate **Publish on TikTok** command.
@@ -14,9 +14,16 @@ An open-source Chrome extension that applies one caption and schedules multiple 
 - schedule from now or from a specific date and time;
 - automatically round typed times and intervals up to 5-minute increments;
 - support TikTok’s available scheduling window of up to 30 days;
-- edit Draft.js captions;
+- optionally edit Draft.js captions, or leave existing captions untouched;
 - keep the global `Publish (N)` action separate;
 - use no external server and collect no credentials.
+
+## Optional caption
+
+The caption field is optional:
+
+- enter text to replace the caption on every clip;
+- leave it empty to skip caption editing and preserve each clip’s existing caption exactly as it is.
 
 ## Start modes
 
@@ -69,13 +76,13 @@ This avoids clicking a non-interactive wrapper or selecting a duplicate day numb
 5. Click **Load unpacked** and select the repository folder.
 6. Open a fresh `https://www.tiktok.com/tiktokstudio/upload` page.
 
-The popup should show `v2.3.0` and `Content script 2.3.0`.
+The popup should show `v2.3.1` and `Content script 2.3.1`.
 
 ## Usage
 
 1. Upload the clips in TikTok Studio.
 2. Open the extension popup.
-3. Enter the shared caption.
+3. Optionally enter a shared caption, or leave the field empty to preserve existing captions.
 4. Choose the interval between clips.
 5. Select **From now** or **From a specific date and time**.
 6. Click **Start automation**.
@@ -88,4 +95,4 @@ Preparation never clicks the global `Publish (N)` button automatically. Publishi
 
 ## Compatibility note
 
-TikTok may change its DOM without notice. Version 2.3.0 uses selectors and behavior verified in July 2026 and avoids dynamically hashed styled-jsx classes.
+TikTok may change its DOM without notice. Version 2.3.1 uses selectors and behavior verified in July 2026 and avoids dynamically hashed styled-jsx classes.
