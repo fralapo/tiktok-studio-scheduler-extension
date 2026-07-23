@@ -1,7 +1,7 @@
 'use strict';
 (() => {
-  const VERSION='2.3.0', P='[TikTok Studio Scheduler]';
-  if(globalThis.__TTS_230__) return; globalThis.__TTS_230__=true;
+  const VERSION='2.3.1', P='[TikTok Studio Scheduler]';
+  if(globalThis.__TTS_231__) return; globalThis.__TTS_231__=true;
   const S={version:VERSION,status:'idle',message:'Ready.',total:0,processed:0,results:[],error:null};
   let running=false,cancelled=false;
   const norm=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim().toLowerCase();
@@ -62,10 +62,10 @@
   }
   async function run(config){cancelled=false;running=true;set({status:'scanning',message:'Checking video rows…',total:0,processed:0,results:[],error:null});try{
     const rs=await stableRows();set({status:'running',message:`Found ${rs.length} clips.`,total:rs.length});let first=config.startMode==='custom'?new Date(+config.startAtMs):null;if(first&&(+first-Date.now()<16*60000))throw new Error('The selected date and time are too close.');let prev=null;
-    for(let i=0;i<rs.length;i++){active();const n=i+1;set({message:`Row ${n}/${rs.length}: updating caption…`});await updateCaption(rs[i],config.caption,n);const target=prev?add(prev,config.intervalMinutes):(first||ceil5(new Date(Date.now()+20*60000)));set({message:`Row ${n}/${rs.length}: scheduling for ${display(target)}…`});prev=await schedule(rs[i],target,n);S.results.push({index:n,success:true,caption:config.caption,displayTime:display(prev),isoTime:prev.toISOString()});set({processed:n,results:[...S.results]});}
+    for(let i=0;i<rs.length;i++){active();const n=i+1;if(config.caption){set({message:`Row ${n}/${rs.length}: updating caption…`});await updateCaption(rs[i],config.caption,n);}else{set({message:`Row ${n}/${rs.length}: keeping the existing caption…`});}const target=prev?add(prev,config.intervalMinutes):(first||ceil5(new Date(Date.now()+20*60000)));set({message:`Row ${n}/${rs.length}: scheduling for ${display(target)}…`});prev=await schedule(rs[i],target,n);S.results.push({index:n,success:true,caption:config.caption,displayTime:display(prev),isoTime:prev.toISOString()});set({processed:n,results:[...S.results]});}
     set({status:'ready',message:`${rs.length} clips prepared. Review the page before publishing.`});
   }catch(e){const m=e.message||String(e);set({status:e.code==='CANCELLED'?'stopped':'error',message:m,error:m});console.error(P,e);}finally{running=false;}}
   async function publish(){if(S.status!=='ready'||!S.results.length)throw new Error('Preparation is not complete.');const b=pub();if(!b||!visible(b))throw new Error('The global Publish (N) button is not available.');set({status:'publishing',message:'Sending the click to Publish (N)…'});await click(b,'Publish (N)');set({status:'published',message:'Click on Publish (N) sent.'});}
-  chrome.runtime.onMessage.addListener((m,_s,reply)=>{if(!m?.type)return false;if(m.type==='TTS_PING'){reply({ok:true,version:VERSION});return false;}if(m.type==='TTS_GET_STATE'){reply({ok:true,state:clone()});return false;}if(m.type==='TTS_STOP'){cancelled=true;set({status:'stopped',message:'Stop requested.'});reply({ok:true,state:clone()});return false;}if(m.type==='TTS_START'){if(running){reply({ok:false,error:'An automation is already running.'});return false;}const c=m.config||{};if(!c.caption||!Number.isInteger(c.intervalMinutes)||c.intervalMinutes%5){reply({ok:false,error:'Invalid configuration.'});return false;}run(c);reply({ok:true});return false;}if(m.type==='TTS_PUBLISH'){publish().then(()=>reply({ok:true,state:clone()})).catch(e=>reply({ok:false,error:e.message,state:clone()}));return true;}return false;});
+  chrome.runtime.onMessage.addListener((m,_s,reply)=>{if(!m?.type)return false;if(m.type==='TTS_PING'){reply({ok:true,version:VERSION});return false;}if(m.type==='TTS_GET_STATE'){reply({ok:true,state:clone()});return false;}if(m.type==='TTS_STOP'){cancelled=true;set({status:'stopped',message:'Stop requested.'});reply({ok:true,state:clone()});return false;}if(m.type==='TTS_START'){if(running){reply({ok:false,error:'An automation is already running.'});return false;}const c=m.config||{};if(typeof c.caption!=='string'||!Number.isInteger(c.intervalMinutes)||c.intervalMinutes%5){reply({ok:false,error:'Invalid configuration.'});return false;}run(c);reply({ok:true});return false;}if(m.type==='TTS_PUBLISH'){publish().then(()=>reply({ok:true,state:clone()})).catch(e=>reply({ok:false,error:e.message,state:clone()}));return true;}return false;});
   console.log(P,`Content script ${VERSION} initialized.`);
 })();
