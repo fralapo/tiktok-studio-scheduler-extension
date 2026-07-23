@@ -28,7 +28,7 @@ jobs:
       - name: Check version consistency
         run: |
           python - <<'PY'
-          import json, re, pathlib, sys
+          import json, pathlib, sys
           manifest = json.loads(pathlib.Path('manifest.json').read_text())
           version = manifest['version']
           texts = {
@@ -41,4 +41,19 @@ jobs:
               print(f"Version {version} not found in: {', '.join(missing)}")
               sys.exit(1)
           print(f"Version is consistent: {version}")
+          PY
+      - name: Check optional caption behavior
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          html = Path('popup.html').read_text()
+          popup = Path('popup.js').read_text()
+          content = Path('content.js').read_text()
+          assert 'id="caption"' in html
+          caption_tag = html.split('id="caption"', 1)[1].split('>', 1)[0]
+          assert 'required' not in caption_tag
+          assert "Enter a caption." not in popup
+          assert "if(config.caption)" in content or "if (config.caption)" in content
+          assert "typeof c.caption!=='string'" in content or "typeof config.caption !== 'string'" in content
+          print('Optional caption behavior is present.')
           PY
