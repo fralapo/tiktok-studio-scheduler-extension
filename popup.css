@@ -89,3 +89,4 @@ progress { width: 100%; accent-color: #fe2c55; }
 .custom-start[hidden] { display: none; }
 .custom-start label { margin-bottom: 6px; }
 .field-hint { margin: 6px 0 0; color: #73737a; font-size: 10px; line-height: 1.4; }
+.optional-label { color: #73737a; font-weight: 500; }
