@@ -1,0 +1,44 @@
+name: Validate extension
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate manifest JSON
+        run: python -m json.tool manifest.json > /dev/null
+      - name: Check required files
+        run: |
+          test -f manifest.json
+          test -f content.js
+          test -f popup.html
+          test -f popup.js
+          test -f popup.css
+          test -f icons/icon16.png
+          test -f icons/icon32.png
+          test -f icons/icon48.png
+          test -f icons/icon128.png
+      - name: Check version consistency
+        run: |
+          python - <<'PY'
+          import json, pathlib, sys
+          manifest = json.loads(pathlib.Path('manifest.json').read_text())
+          version = manifest['version']
+          texts = {
+              'content.js': pathlib.Path('content.js').read_text(),
+              'popup.js': pathlib.Path('popup.js').read_text(),
+              'popup.html': pathlib.Path('popup.html').read_text(),
+          }
+          missing = [name for name, text in texts.items() if version not in text]
+          if missing:
+              print(f"Versione {version} non trovata in: {', '.join(missing)}")
+              sys.exit(1)
+          print(f"Versione coerente: {version}")
+          PY
